@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Survey Data Visualization</title>
+    <style>
+        :root {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f7f7f5;
+            --text-primary: #37352f;
+            --text-secondary: #787774;
+            --border-color: #e9e9e7;
+            --hover-bg: #f0f0f0;
+            --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif;
+        }
+
+        body {
+            margin: 0;
+            padding: 24px 36px;
+            font-family: var(--font-family);
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.5;
+        }
+
+        header {
+            margin-bottom: 24px;
+        }
+
+        h1 {
+            font-size: 24px;
+            font-weight: 600;
+            margin: 0 0 16px 0;
+        }
+
+        /* Toolbar & Tabs */
+        .toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 12px;
+            margin-bottom: 20px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 16px;
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 6px 4px;
+            position: relative;
+            transition: color 0.2s ease;
+        }
+
+        .tab-btn:hover {
+            color: var(--text-primary);
+        }
+
+        .tab-btn.active {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: -13px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background-color: var(--text-primary);
+        }
+
+        .search-container input {
+            padding: 6px 12px;
+            font-size: 14px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            outline: none;
+            width: 250px;
+            font-family: var(--font-family);
+        }
+
+        .search-container input:focus {
+            border-color: var(--text-secondary);
+        }
+
+        /* Table Styles */
+        .table-container {
+            overflow-x: auto;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            max-height: 70vh;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            white-space: nowrap;
+        }
+
+        th, td {
+            padding: 10px 14px;
+            border-bottom: 1px solid var(--border-color);
+            border-right: 1px solid var(--border-color);
+        }
+
+        th:last-child, td:last-child {
+            border-right: none;
+        }
+
+        th {
+            background-color: var(--bg-secondary);
+            font-weight: 600;
+            text-align: left;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            cursor: pointer;
+            user-select: none;
+            box-shadow: 0 1px 0 var(--border-color);
+        }
+
+        th:hover {
+            background-color: var(--border-color);
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tbody tr:hover {
+            background-color: var(--bg-secondary);
+        }
+
+        .empty-state {
+            padding: 40px;
+            text-align: center;
+            color: var(--text-secondary);
+        }
+
+        .sort-icon {
+            margin-left: 6px;
+            font-size: 10px;
+            color: var(--text-secondary);
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Survey Data Viewer</h1>
+        <div class="toolbar">
+            <div class="tabs" id="tabContainer">
+                <button class="tab-btn active" data-target="project1">Project 1</button>
+                <button class="tab-btn" data-target="project2">Project 2</button>
+            </div>
+            <div class="search-container">
+                <input type="text" id="searchInput" placeholder="Filter records...">
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div class="table-container" id="tableContainer">
+            </div>
+    </main>
+
+    <template id="raw-project1">
+        <div class="ritz grid-container" dir="ltr"><table class="waffle no-grid" cellspacing="0" cellpadding="0">
+        <tbody>
+            <tr><th id="2038382690R3" style="height: 19px;">4</th><td class="s3"></td><td class="s4">prof_position</td><td class="s4">ps_training</td><td class="s4">unit_primary</td><td class="s4">years_hospital</td><td class="s4">years_unit</td><td class="s5">hours_week</td><td class="s6">patient_contact</td><td class="s4">A1_teamwork</td><td class="s4">A2_staffing</td></tr>
+            <tr><th>5</th><td class="s3"></td><td class="s9">Intern</td><td class="s9">Yes</td><td class="s9">Multiple units</td><td class="s9">6–10 years</td><td class="s9">6–10 years</td><td class="s9">&gt; 40 hours per week</td><td class="s9">Yes</td><td class="s9">Strongly Agree</td><td class="s9">Strongly Disagree</td></tr>
+            <tr><th>6</th><td class="s3"></td><td class="s9">Trainee</td><td class="s9">Yes</td><td class="s9">No specific unit</td><td class="s9">1–5 years</td><td class="s9">&lt; 1 year</td><td class="s9">30–40 hours per week</td><td class="s9">Yes</td><td class="s9">Strongly Agree</td><td class="s9">Agree</td></tr>
+            <tr><th>7</th><td class="s3"></td><td class="s9">Consultant</td><td class="s9">Yes</td><td class="s9">Multiple units</td><td class="s9">11 years or more</td><td class="s9">11 years or more</td><td class="s9">&gt; 40 hours per week</td><td class="s9">Yes</td><td class="s9">Disagree</td><td class="s9">Strongly Disagree</td></tr>
+        </tbody>
+        </table></div>
+    </template>
+
+    <template id="raw-project2">
+        <div class="ritz grid-container" dir="ltr"><table class="waffle no-grid" cellspacing="0" cellpadding="0">
+        <tbody>
+            <tr><th>4</th><td class="s2"></td><td class="s3">nicu_position</td><td class="s3">ps_training</td><td class="s3">training_type</td><td class="s3">age_group</td><td class="s4">highest_qualification</td><td class="s5">years_hospital</td><td class="s3">years_unit</td><td class="s4">hours_week</td><td class="s5">patient_contact</td></tr>
+            <tr><th>5</th><td class="s2"></td><td class="s7">Advanced Practice Nurse</td><td class="s7">Yes</td><td class="s7">Medication safety; Neonatal resuscitation</td><td class="s7">35–44</td><td class="s7">Technical Institute of Nursing</td><td class="s7">6–10 years</td><td class="s7">6–10 years</td><td class="s7">&gt; 40 hours per week</td><td class="s7">Yes</td></tr>
+            <tr><th>6</th><td class="s2"></td><td class="s7">Licensed Vocational Nurse</td><td class="s7">Yes</td><td class="s7">Infection prevention and control; Neonatal resuscitation; Error reporting and patient safety systems</td><td class="s7">&lt; 25</td><td class="s7">Nursing Diploma</td><td class="s7">1–5 years</td><td class="s7">&lt; 1 year</td><td class="s7">30–40 hours per week</td><td class="s7">Yes</td></tr>
+            <tr><th>7</th><td class="s2"></td><td class="s7">Patient Care Aide</td><td class="s7">Yes</td><td class="s7">Infection prevention and control; Neonatal resuscitation; Error reporting and patient safety systems</td><td class="s7">45 or older</td><td class="s7">Bachelor’s Degree</td><td class="s7">11 years or more</td><td class="s7">11 years or more</td><td class="s7">&gt; 40 hours per week</td><td class="s7">Yes</td></tr>
+        </tbody>
+        </table></div>
+    </template>
+
+    <script>
+        class DataPipeline {
+            constructor() {
+                this.dataStore = {
+                    project1: { headers: [], rows: [] },
+                    project2: { headers: [], rows: [] }
+                };
+                this.activeState = {
+                    tab: 'project1',
+                    sortColIndex: null,
+                    sortAsc: true,
+                    filterQuery: ''
+                };
+                
+                this.init();
+            }
+
+            init() {
+                this.parseRawHTML('raw-project1', 'project1');
+                this.parseRawHTML('raw-project2', 'project2');
+                this.bindEvents();
+                this.render();
+            }
+
+            // Transformation Pipeline: Extract structure from raw markup
+            parseRawHTML(templateId, storageKey) {
+                const template = document.getElementById(templateId);
+                if (!template) return;
+
+                const trElements = template.content.querySelectorAll('tbody tr, tr');
+                let headerIdentified = false;
+
+                trElements.forEach(row => {
+                    // Extract data strictly from <td> elements to bypass outer Google Sheets wrappers
+                    const tdElements = Array.from(row.querySelectorAll('td'));
+                    if (tdElements.length === 0) return;
+
+                    const cellValues = tdElements.map(td => td.innerText.trim());
+
+                    // Heuristic constraint: The header row is the first row containing defining structural keys
+                    if (!headerIdentified && (cellValues.includes('prof_position') || cellValues.includes('nicu_position'))) {
+                        this.dataStore[storageKey].headers = cellValues;
+                        headerIdentified = true;
+                    } 
+                    else if (headerIdentified && cellValues.some(val => val !== '')) {
+                        // Data row transformation
+                        this.dataStore[storageKey].rows.push(cellValues);
+                    }
+                });
+            }
+
+            bindEvents() {
+                // Tab Navigation
+                document.getElementById('tabContainer').addEventListener('click', (e) => {
+                    if (e.target.tagName === 'BUTTON') {
+                        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+                        e.target.classList.add('active');
+                        this.activeState.tab = e.target.getAttribute('data-target');
+                        this.activeState.sortColIndex = null; // Reset sort on tab change
+                        this.render();
+                    }
+                });
+
+                // Filter Evaluation
+                document.getElementById('searchInput').addEventListener('input', (e) => {
+                    this.activeState.filterQuery = e.target.value.toLowerCase();
+                    this.render();
+                });
+            }
+
+            handleSort(colIndex) {
+                if (this.activeState.sortColIndex === colIndex) {
+                    this.activeState.sortAsc = !this.activeState.sortAsc;
+                } else {
+                    this.activeState.sortColIndex = colIndex;
+                    this.activeState.sortAsc = true;
+                }
+                this.render();
+            }
+
+            getProcessedData() {
+                const { tab, filterQuery, sortColIndex, sortAsc } = this.activeState;
+                const activeData = this.dataStore[tab];
+                
+                let processedRows = [...activeData.rows];
+
+                // Execute filter constraint
+                if (filterQuery) {
+                    processedRows = processedRows.filter(row => 
+                        row.some(cell => cell.toLowerCase().includes(filterQuery))
+                    );
+                }
+
+                // Execute sort transformation
+                if (sortColIndex !== null) {
+                    processedRows.sort((a, b) => {
+                        const valA = a[sortColIndex] || '';
+                        const valB = b[sortColIndex] || '';
+                        
+                        // Numeric vs String parsing
+                        const numA = parseFloat(valA);
+                        const numB = parseFloat(valB);
+                        
+                        let comparison = 0;
+                        if (!isNaN(numA) && !isNaN(numB)) {
+                            comparison = numA - numB;
+                        } else {
+                            comparison = valA.localeCompare(valB);
+                        }
+                        return sortAsc ? comparison : -comparison;
+                    });
+                }
+
+                return { headers: activeData.headers, rows: processedRows };
+            }
+
+            render() {
+                const container = document.getElementById('tableContainer');
+                const { headers, rows } = this.getProcessedData();
+
+                if (headers.length === 0 && rows.length === 0) {
+                    container.innerHTML = `<div class="empty-state">No data available. Please ensure raw HTML is embedded in the template tags.</div>`;
+                    return;
+                }
+
+                const table = document.createElement('table');
+                
+                // Construct Headers
+                const thead = document.createElement('thead');
+                const headerRow = document.createElement('tr');
+                headers.forEach((headerText, index) => {
+                    // Ignore empty structural columns from Sheets export
+                    if (!headerText && index === 0) return; 
+
+                    const th = document.createElement('th');
+                    th.textContent = headerText;
+                    
+                    if (this.activeState.sortColIndex === index) {
+                        const icon = document.createElement('span');
+                        icon.className = 'sort-icon';
+                        icon.innerHTML = this.activeState.sortAsc ? '▲' : '▼';
+                        th.appendChild(icon);
+                    }
+
+                    th.addEventListener('click', () => this.handleSort(index));
+                    headerRow.appendChild(th);
+                });
+                thead.appendChild(headerRow);
+                table.appendChild(thead);
+
+                // Construct Body
+                const tbody = document.createElement('tbody');
+                rows.forEach(rowData => {
+                    const tr = document.createElement('tr');
+                    rowData.forEach((cellText, index) => {
+                        if (!headers[index] && index === 0) return; // Skip empty structural column
+                        const td = document.createElement('td');
+                        td.textContent = cellText;
+                        tr.appendChild(td);
+                    });
+                    tbody.appendChild(tr);
+                });
+                table.appendChild(tbody);
+
+                container.innerHTML = '';
+                container.appendChild(table);
+            }
+        }
+
+        // Instantiate pipeline
+        document.addEventListener('DOMContentLoaded', () => {
+            window.appPipeline = new DataPipeline();
+        });
+    </script>
+</body>
+</html>
